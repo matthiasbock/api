@@ -1,0 +1,14 @@
+mqtt:
+  sensor:
+    - name: kitchen-temp
+      state_topic: 02/00002F71/[Device-MAC]/V/A1
+      unit_of_measurement: °C
+
+input_number:
+  temp_kitchen:
+    name: temp_kitchen
+    initial: 20
+    min: 13
+    max: 30
+    step: 0.5
+    unit_of_measurement: °C

@@ -1,0 +1,26 @@
+V/ set value
+S/ reportvalue
+
+A0 setpoint
+A1 current temp
+A2 temp Offset
+A3 options bitfield keylock / sumertime / rotate display
+  #200700 rotate off
+  #220500 rotate on
+  #230400 activate summertime
+  #220500 deactivate summertime
+  #270000 key lock on 
+  #230400 key lock off
+
+A5 => window open settings #1234 
+  last byte = duration in min
+  first byte senitivity
+  X80 => high
+  X08 => middel
+  X0C =>low
+  
+A7 - holiday settings
+A8 - AE weekday program
+
+S/AF = #02000000 -- connect with app, request current temp
+       #FFFFFFFF -- request device to send all fields back

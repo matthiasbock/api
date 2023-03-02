@@ -1,0 +1,47 @@
+- id: ''
+  alias: Receive Target Temperature
+  description: ''
+  trigger:
+    - platform: mqtt
+      topic: 02/00002F71/+/V/A0
+  condition: []
+  action:
+    service: script.update_target_temparature
+    data:
+      topic: '{{ trigger.topic }}'
+      payload: '{{ trigger.payload}}'
+  mode: parallel
+  max: 50
+
+- id: ''
+  alias: Set Target Temperature
+  description: ''
+  trigger:
+    - platform: state
+      entity_id:
+        #include all your input numbers here
+        - input_number.temp_kitchen
+  condition: []
+  action:
+    service: script.set_temps
+    data:
+      temp: '{{ trigger.to_state.state }}'
+      target: '{{ trigger.entity_id }}'
+  mode: parallel
+  max: 50
+
+- id: ''
+  alias: 'Answer #COMM-TEST'
+  description: ''
+  trigger:
+    - platform: mqtt
+      topic: 02/00002F71/+/S/XX
+  condition: []
+  action:
+    service: script.answer_test
+    data:
+      topic: '{{ trigger.topic }}'
+  #since request and answer are on the same topic set mode to single and add optional delay otherwise this will run in a loop and drain the battery of your thermostat
+  - delay:
+    minutes: 1
+  mode: single

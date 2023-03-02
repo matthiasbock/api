@@ -1,0 +1,66 @@
+update_target_temparature:
+  alias: "Update Target Temperature Input Number"
+  fields:
+    topic:
+      name: Topic
+    payload:
+      name: Payload
+  sequence:
+    - choose:
+      #choose for the different thermostats, depending on the MAC in the topic
+      #repeat this conditions block for every thermostat, replace the device MAC and the input number
+      - conditions:
+        - condition: template
+          value_template: '{{ topic[12:24] == "[Device MAC]" }}'
+        sequence:
+          - service: input_number.set_value
+            target:
+              entity_id: input_number.temp_kitchen
+            data:
+              value: '{{ int(payload[1:],base=16)/2 }}'
+  mode: parallel
+  max: 50
+
+set_temps:
+  alias: Set Temperature
+  fields:
+    temp:
+      name: Temp
+    target:
+      name: Target
+  sequence:
+    - choose:
+        #choose for the different thermostats, depending on the MAC in the topic
+        #repeat this conditions block for every thermostat, replace the device MAC and the input number
+      - conditions:
+        - condition: template
+          value_template: '{{ target == "input_number.temp_kitchen" }}'
+        sequence:
+          - service: mqtt.publish
+            data:
+              topic: 02/00002F71/[device MAC]/S/A0
+              payload: '{{ "#" + "%0x" %int(float(temp)*2) }}'
+              qos: 2
+    mode: parallel
+    max: 50
+
+answer_test:
+  alias: Answer COMM-TEST
+  fields:
+    topic:
+      name: Topic
+    payload:
+      name: Payload
+  sequence:
+    - choose:
+        #choose for the different thermostats, depending on the MAC in the topic
+        #repeat this conditions block for every thermostat, replace the device MAC and the input number
+      - conditions:
+        - condition: template
+          value_template: '{{ topic[12:24] == "[Device MAC]" }}'
+          sequence:
+          - service:
+            data:
+              topic: 02/00002F71/[device MAC]/S/XX
+              payload: "#COMM-TEST"
+              qos: 2
