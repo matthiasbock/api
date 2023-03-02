@@ -1,0 +1,111 @@
+openapi: '3.0.2'
+info:
+  title: Techem Verbrauchsinfo Heizung
+  version: '0.1'
+components:
+  schemas:
+    tennant_id_t:
+      type: string
+      minLength: 47
+      maxLength: 47
+  parameters:
+    tennant_id_t:
+      name: tennant_id_t
+      schema:
+        $ref: "#/components/schemas/tennant_id_t"
+      in: path
+      required: true
+servers:
+  - url: https://mieter.techem.de/api/v1
+paths:
+  # Get OpenID configuration
+  # GET https://techemtenantportal.b2clogin.com/techemtenantportal.onmicrosoft.com/b2c_1a_signin/v2.0/.well-known/openid-configuration
+
+  # Login
+  /auth/account/tenants/{tennant_id}:
+    get:
+      responses:
+        "200":
+          description: "Login succeeded"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                    id:
+                      type: string
+                      description: "Tenant ID"
+                    tenantNumber:
+                      type: string
+                    techemTenantNumber:
+                      type: string
+                    # TODO: etc.
+
+        "401":
+          description: Unauthorized
+
+  # Get list of available consumption periods
+  /consumptions/residential-units/{tennant_id}/consumptions/periods?limit={limit}:
+    get:
+      # Request:
+      #  Authorization: Bearer <token>
+
+      responses:
+        "200":
+          description: Request succeeded
+          content:
+            application/json:
+              # TODO
+
+        "401":
+          description: Unauthorized
+
+  # Get tenant's consumption for the specified period
+  /consumptions/residential-units/{tennant_id}/consumptions/{year}-{month}:
+    get:
+      # Request:
+      #  Authorization: Bearer <token>
+
+      responses:
+        "200":
+          # 
+          description: Request succeeded
+          content:
+            application/json:
+              # TODO
+
+        "401":
+          # 
+          description: Unauthorized
+
+  # Get several consumption values
+  /consumptions/residential-units/{tennant_id}/consumptions/?service=HEATING&unitOfMeasure=KWH&limit=24&offset=0:
+    get:
+      # Request:
+      #  Authorization: Bearer <token>
+
+      responses:
+        "200":
+          description: Request succeeded
+          content:
+            application/json:
+              # TODO
+
+        "401":
+          description: Unauthorized
+
+  # Get consumption statistics
+  /consumptions/statistics/residential-units/{tennant_id}/consumptions/{year}-{month}/average:
+    get:
+      # Request:
+      #  Authorization: Bearer <token>
+
+      responses:
+        "200":
+          description: Request succeeded
+          content:
+            application/json:
+              # TODO
+
+        "401":
+          description: Unauthorized
